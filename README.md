@@ -54,7 +54,7 @@ graph TD
     end
     
     FS -.->|Destructive Action| EngineTrap["Tool Sandbox Trap"]:::safe
-    EngineTrap -.->|Prompt [y/N]| UI
+    EngineTrap -.->|"Prompt [y/N]"| UI
 ```
 
 ### 1. The Multi-Model Fallback Chain
