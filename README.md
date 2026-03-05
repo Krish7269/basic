@@ -1,8 +1,8 @@
 ```text
  _  _ __  ___ ___ _  _  ___  __  __  ___ 
-| |/ /_ _|_ _|_ _| || |/ __|/__\/_ \/ __|
+| |/ /_ _|_ _|_ _| || |/ __|/__\/_\ / __|
 | ' < | | | | | | \_. | (__| \/ | \/ (__ 
-|_|\_\___|___|___|___/ \___|\__/\__/\___|
+|_|\_\___|___|___|___/ \___|\_/\__/\___|
 ```
 
 # KittyCode CLI
@@ -10,8 +10,6 @@
 An autonomous, multi-model AI software engineering co-pilot designed for local development.
 
 ---
-
-
 
 ## Key Features
 
@@ -56,6 +54,16 @@ graph TD
     FS -.->|Destructive Action| EngineTrap["Tool Sandbox Trap"]:::safe
     EngineTrap -.->|"Prompt [y/N]"| UI
 ```
+
+**How the diagram flows:**
+
+1. **Entry Point** — Every input hits the CLI/REPL interface first.
+2. **Multi-Model Router** — Routes based on mode: `Chat` goes direct to the LLM; `Code` goes through the Planner.
+3. **Planner Scope Decision** — `ask` commands short-circuit back to the LLM instantly. `project` commands escalate to the human confirmation gate.
+4. **Human Confirmation Gate** — The user explicitly approves the generated plan before any multi-step execution begins.
+5. **Debate Ring** — The **Builder** LLM writes the code; the **Critic** LLM validates it for bugs and safety violations before anything executes.
+6. **Tool Engine & Sandbox** — Builder output is intercepted by the Tool Engine inside a strict, sandboxed project boundary.
+7. **Destructive Action Trap** — Writes, deletes, and shell commands pause the thread and route a `[y/N]` confirmation prompt back to the user before proceeding.
 
 ### 1. The Multi-Model Fallback Chain
 Operating autonomous agents is subject to API volatility. The `ModelRouter` is configured with a deterministic fallback chain:
@@ -134,7 +142,7 @@ BYTEZ_API_KEY=your_bytez_api_key_here
 ```
 
 ### Local Settings
-Configuration configurations are managed via a `.kitty` directory mapped into your local project root. 
+Configuration is managed via a `.kitty` directory mapped into your local project root.
 - **Model Switching:** Use the `/model` conversational command to hot-swap the primary intelligence engine.
 - **Theme Selection:** Interface aesthetics are prompted upon session initialization and persisted.
 
@@ -157,7 +165,7 @@ If the tool registry flags an action as `destructive: true`, the execution threa
 - `run_cmd`: Executes bash/powershell scripts.
 
 ```text
-[Engine] ⚠️ The agent has requested to execute: `pip install requests`
+[Engine] The agent has requested to execute: `pip install requests`
 Do you want to allow this operation? [y/N]
 ```
 
@@ -186,7 +194,7 @@ kittycode/
 ├── security/
 │   └── sandbox.py      # Hardened directory traversal prevention
 ├── telemetry/
-│   └── logger.py       # Structured JSON JSON telemetry and trace IDs
+│   └── logger.py       # Structured JSON telemetry and trace IDs
 └── tools/
     ├── engine.py       # Primary execution interceptor and sandbox host
     ├── registry.py     # Dynamic JSON schema definitions for the LLM
@@ -200,12 +208,10 @@ kittycode/
 KittyCode is designed with strict boundaries to protect the host machine from autonomous hallucination.
 
 1. **Workspace Isolation:** All `fs_tools` operations are bounded to the directory where the CLI was invoked.
-2. **Reasoning Mode Data Protection:** When the agent processes a logic-only step, structural tool schemas (like `write_file`) are physically stripped from the context buffer. The agent mathematically cannot command a file write because it does not possess the syntax format.
+2. **Reasoning Mode Data Protection:** When the agent processes a logic-only step, structural tool schemas (like `write_file`) are physically stripped from the context buffer. The agent cannot command a file write because it does not have access to the syntax format.
 3. **Execution Timeouts:** `run_cmd` operations are bound by a hard 60-second timeout to prevent runaway event loops or infinite while loops from locking the thread.
 
 ---
-
-
 
 ## Contributing
 
@@ -230,6 +236,6 @@ Please ensure all PRs pass the strict `flake8` CI checks before submission.
 
 KittyCode began as a bespoke automation script—a surprise gift written by the original developer for a close friend. The goal was to build an interface that felt deeply personal, helpful, and conversational. As the architecture scaled to include complex multi-agent swarms, vector databases, and fault-tolerant routing, it evolved into a production-grade orchestration engine.
 
-Our philosophy remains unchanged: A developer tool should not only be structurally robust and secure, but it should also feel like a dedicated companion in your workspace. 
+Our philosophy remains unchanged: A developer tool should not only be structurally robust and secure, but it should also feel like a dedicated companion in your workspace.
 
 *— Built by Krish (GitHub: Quantum-Blade1)*
